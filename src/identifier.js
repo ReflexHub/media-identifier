@@ -1,3 +1,5 @@
+"use strict";
+
 const path = require("path");
 const natural = require("natural");
 const cheerio = require("cheerio");
