@@ -1,0 +1,34 @@
+{
+  "name": "media-identifier",
+  "version": "1.0.0",
+  "description": "Media Identifier for use with reflex-server",
+  "main": "identifier.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ReflexHub/media-identifier.git"
+  },
+  "keywords": [
+    "media",
+    "identifier",
+    "file",
+    "name",
+    "natural",
+    "tmdb"
+  ],
+  "author": "Amish Shah <amishshah.2k@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ReflexHub/media-identifier/issues"
+  },
+  "homepage": "https://github.com/ReflexHub/media-identifier#readme",
+  "dependencies": {
+    "natural": "^0.2.1",
+    "superagent": "^1.6.1"
+  }
+}
