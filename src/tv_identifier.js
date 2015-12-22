@@ -36,15 +36,15 @@ class TVIdentifier {
 							file_name
 							)));
 
-			let info = matcher.is_season_or_episode(query.split(" ").join(".") + ".");
+			let info = matcher.is_season_or_episode("." + query.split(" ").reverse().join(".") + ".");
 
 			let season, episode;
 
-			season = info[2];
-			episode = info[3];
-
-			if (info) {
-				query = info[1].split(".").join(" ") + info[4].split(".").join(" ");
+			if(info && info.length >= 4){
+				season = info[2];
+				episode = info[3];
+				query = info[4].split(".").reverse().join(" ") + " " + info[1].split(".").reverse().join(" ");
+				query = query.trim();
 			}
 
 			this.tmdb_series_searcher.searchTV(query)

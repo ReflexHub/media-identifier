@@ -22,7 +22,7 @@ class TMDBSearcher {
 	// prematurely
 	sortClosest(query, results) {
 		for (let result of results) {
-			result.closeness = natural.JaroWinklerDistance(query, result.name.toLowerCase());
+			result.closeness = natural.JaroWinklerDistance(query, (result.name || result.title).toLowerCase());
 		}
 		results = results.sort((a, b) => b.closeness - a.closeness);
 		return results;

@@ -24,6 +24,6 @@ for(let file_name of movie_names){
 }
 for(let file_name of tv_names){
 	media_identifier.identifyTV(file_name).then(r => {
-		console.log(file_name + ":\n", r.series.name + " - " + r.episode.name);
+		console.log(r.series.name + " - " + r.episode.name);
 	}).catch(e => console.log(e.stack));
 }
