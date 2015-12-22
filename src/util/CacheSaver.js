@@ -8,7 +8,8 @@ exports.save = (data, loc) => {
 	if(!loc)
 		return;
 
-	fs.outputJson( path.join(loc, filename), data, err => {
+	// not using output JSON as it does not minify
+	fs.outputFile( path.join(loc, filename), JSON.stringify(data), err => {
 		// nothing
 	} )
 
