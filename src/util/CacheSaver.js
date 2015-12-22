@@ -1,9 +1,7 @@
 const fs = require("fs-extra");
 const path = require("path");
 
-const filename = "tmdb.cache.json";
-
-exports.save = (data, loc) => {
+exports.save = (data, loc, filename) => {
 
 	if(!loc)
 		return;
@@ -15,7 +13,7 @@ exports.save = (data, loc) => {
 
 };
 
-exports.load = loc => {
+exports.load = (loc, filename) => {
 
 	if(!loc)
 		return {};

@@ -6,16 +6,14 @@ a file name
 const remove_terms = require("../data/remove_from").all.map(v => v.toLowerCase());
 const hp_remove_terms = require("../data/remove_from").high_priority.map(v => v.toLowerCase());
 
+const season_episode_reg = /(.*?)\.s?(\d{1,2})e?(\d{1,2})\.(.*)/;
+
 exports.is_season_or_episode = str => {
 
-	/*
-		S01E01
+	/*	S01E01
 		S1E1
-		101
-
-		todo
-	*/
-	return false;
+		101		*/
+	return str.toLowerCase().match(season_episode_reg);
 };
 
 exports.is_year = str => {

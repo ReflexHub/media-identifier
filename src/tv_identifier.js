@@ -4,11 +4,12 @@ const path = require("path");
 const matcher = require("./util/matcher");
 const TMDBSearcher = require("./util/TMDBSearcher");
 
-class MovieIdentifier {
+class TVIdentifier {
 
 	constructor(identifier) {
 		this.identifier = identifier;
-		this.tmdb_searcher = new TMDBSearcher(this.identifier.options.api_keys.tmdb, this.identifier.options.cache_location, "tmdb.movies.cache.json");
+		this.tmdb_series_searcher = new TMDBSearcher(this.identifier.options.api_keys.tmdb, this.identifier.options.cache_location, "tmdb.tv.cache.json");
+		this.tmdb_episode_searcher = new TMDBSearcher(this.identifier.options.api_keys.tmdb, this.identifier.options.cache_location, "tmdb.episodes.cache.json");
 	}
 
 	// set all_able as true if you want to use Promise.all
@@ -26,9 +27,56 @@ class MovieIdentifier {
 							file_name
 							)));
 
-			this.tmdb_searcher.searchMovie(query)
-				.then(r => {
-					resolve(r);
+			let info = matcher.is_season_or_episode(query.split(" ").join(".") + ".");
+
+			let season, episode;
+
+			season = info[2];
+			episode = info[3];
+
+			if (info) {
+				query = info[1].split(".").join(" ") + info[4].split(".").join(" ");
+			}
+
+			this.tmdb_series_searcher.searchTV(query)
+				.then(series => {
+
+					if (series) {
+						if (!season || !episode) {
+							if (all_able) {
+								resolve(null);
+							} else {
+								reject(null);
+							}
+							return;
+						}
+						this.tmdb_episode_searcher.tvEpisodeInfo(series.id, season, episode)
+							.then(episode => {
+								if (episode) {
+									resolve({ series, episode });
+								} else {
+									if (all_able) {
+										resolve(null);
+									} else {
+										reject(null);
+									}
+								}
+							})
+							.catch(e => {
+								if (all_able) {
+									resolve(null);
+								} else {
+									reject(e);
+								}
+							});
+					} else {
+						if (all_able) {
+							resolve(null);
+						} else {
+							reject(null);
+						}
+					}
+
 				})
 				.catch(e => {
 					if (all_able) {
@@ -101,13 +149,13 @@ class MovieIdentifier {
 
 			final_chunks.push(chunk);
 
-			if (matcher.is_year(chunk)) {
+			if (matcher.is_season_or_episode(chunk)) {
 
-				if(!chunks.slice(id+1).find(v => matcher.is_year(v))){
+				if (!chunks.slice(id + 1).find(v => matcher.is_season_or_episode(v))) {
 					break;
 				}
 
-			}else if(matcher.is_remove_term(chunk)){
+			} else if (matcher.is_remove_term(chunk)) {
 				break;
 			}
 
@@ -117,4 +165,4 @@ class MovieIdentifier {
 
 }
 
-module.exports = MovieIdentifier;
+module.exports = TVIdentifier;

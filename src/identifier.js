@@ -5,6 +5,7 @@ const natural = require("natural");
 //const cheerio = require("cheerio");
 //const request = require("superagent");
 const MovieIdentifier = require("./movie_identifier");
+const TVIdentifier = require("./tv_identifier");
 
 class Identifier {
 	constructor(options) {
@@ -41,6 +42,7 @@ class Identifier {
 		 */
 
 		this.movie_identifier = new MovieIdentifier(this);
+		this.tv_identifier = new TVIdentifier(this);
 
 	}
 
@@ -50,6 +52,11 @@ class Identifier {
 
 	}
 
+	identifyTV(path_to_file) {
+
+		return this.tv_identifier.identify(path_to_file);
+
+	}
 }
 
 module.exports = Identifier;
