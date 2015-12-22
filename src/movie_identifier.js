@@ -2,18 +2,46 @@
 
 const path = require("path");
 const matcher = require("./util/matcher");
+const MovieDB = require("moviedb");
 
 class MovieIdentifier {
 
 	constructor(identifier) {
 		this.identifier = identifier;
+		this.mdb = MovieDB(this.identifier.options.api_keys.tmdb);
 	}
 
 	identify(path_to_file){
 
 		let file_name = path.basename(path_to_file);
-		return this.findFocus(this.cleanFileName(file_name));
 
+		// the rough query name
+		let query_name = this.cleanFileName(this.findFocus(file_name));
+
+		// a TMDB-relevant query (including year tags where apt)
+		let has_year;
+		for(let term of query_name.split(" ")){
+			if(matcher.is_year(term)){
+				has_year = term;
+				break;
+			}
+		}
+
+		let query = query_name;
+
+		if(has_year){
+			query = query.replace(new RegExp(has_year, "g"), "");
+			query = query += " y:" + has_year;
+		}
+
+		// not search movie because fsr that does not work :\
+		this.mdb.searchMulti({
+			query
+		}, (err, res) => {
+			if(!err){
+				console.log(res.results[0].title);
+			}
+		});
 	}
 
 	cleanFileName(name) {
@@ -34,7 +62,7 @@ class MovieIdentifier {
 	}
 
 	findFocus(name) {
-		/*	2nd stage of cleaning a file name, focusses on what it expects to be the correct term
+		/*	1st stage of cleaning a file name, focusses on what it expects to be the correct term
 			e.g. `the movie name 2016 hd` becomes `the movie name` with a year of `2016`
 
 			see https://github.com/ReflexHub/media-identifier/wiki/Media-Naming-Conventions
@@ -43,7 +71,7 @@ class MovieIdentifier {
 			todo
 		*/
 
-		let chunks = name.split(" "),
+		let chunks = this.identifier.tokenizer.tokenize(name),
 			final_chunks = [];
 
 		for(let id in chunks){
@@ -55,7 +83,7 @@ class MovieIdentifier {
 
 			final_chunks.push(chunk);
 
-			if(matcher.is_year(chunk)){
+			if(matcher.is_year(chunk) || matcher.is_remove_term(chunk)){
 				break;
 			}
 

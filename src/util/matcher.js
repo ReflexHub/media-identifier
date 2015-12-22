@@ -2,6 +2,10 @@
 this tries to identify things such as season/epsiode in
 a file name
 */
+
+const remove_terms = require("../data/remove_from").all.map(v => v.toLowerCase());
+const hp_remove_terms = require("../data/remove_from").high_priority.map(v => v.toLowerCase());
+
 exports.is_season_or_episode = str => {
 
 	/*
@@ -40,3 +44,9 @@ exports.is_random_number = n => {
 		}
 	}
 }
+
+exports.is_remove_term = n => {
+
+	return ~hp_remove_terms.indexOf(n.toLowerCase());
+
+};

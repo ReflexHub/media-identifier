@@ -19,7 +19,11 @@ class Identifier {
 			"FILENAME"
 		];
 
-		options.remove_terms = require("./data/remove_from").concat(options.remove_terms || []);
+		options.api_keys = options.api_keys || {
+			"tmdb" : null
+		};
+
+		options.remove_terms = require("./data/remove_from").all.concat(options.remove_terms || []);
 		options.extension_names = require("./data/extension_names").concat(options.extension_names || []);
 
 		options.remove_terms =

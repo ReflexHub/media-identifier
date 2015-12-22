@@ -1,14 +1,17 @@
 "use strict";
 /* global process */
 const Identifier = require("../identifier");
-const media_identifier = new Identifier();
-var file_names;
+
+var file_names, api_keys;
 try {
 	file_names = require("./file_names");
+	api_keys = require("./api_keys");
 } catch (e) {
-	console.log("You are missing a file needed to test!\n" + e.stack);
+	console.log("You are missing files needed to test!\n" + e.stack);
 	process.exit(1);
 }
+
+const media_identifier = new Identifier({api_keys});
 
 console.log();
 console.log("Testing identification:");

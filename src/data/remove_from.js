@@ -5,9 +5,13 @@
 	This can help to improve the accuracy of the
 	identification process.
 */
-module.exports = [
-	"HDTV", "x264", "LOL", "ettv", "PROPER", "720p",
-	"Season", "Episode", "BATV", "WEB", "DL", "AAC",
-	"1080p", "4k", "Bluray", "eng", "subs", "h264",
-	"DVDScr", "xvid", "ac3", "hq"
+
+exports.high_priority = [
+	"HDTV", "x264", "LOL", "ettv", "720p", "BATV",
+	"DL", "AAC", "1080p", "4k", "bluray", "eng",
+	"subs", "h264", "dvdscr", "xvid", "ac3", "hq"
 ]
+
+exports.all = [
+	"Season", "Episode"
+].concat(exports.high_priority);
