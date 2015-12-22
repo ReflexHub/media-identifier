@@ -15,10 +15,6 @@ class Identifier {
 
 		options = options || {};
 
-		options.hierachy = options.hierachy || [
-			"FILENAME"
-		];
-
 		options.api_keys = options.api_keys || {
 			"tmdb" : null
 		};
