@@ -17,6 +17,15 @@ class TVIdentifier {
 
 		return new Promise((resolve, reject) => {
 
+			function failed(e) {
+				if (all_able) {
+					resolve(null);
+				} else {
+					reject(null);
+				}
+				return;
+			}
+
 			let file_name = path.basename(path_to_file);
 
 			// the rough query name
@@ -43,48 +52,26 @@ class TVIdentifier {
 
 					if (series) {
 						if (!season || !episode) {
-							if (all_able) {
-								resolve(null);
-							} else {
-								reject(null);
-							}
+							failed();
 							return;
 						}
 						this.tmdb_episode_searcher.tvEpisodeInfo(series.id, season, episode)
 							.then(episode => {
+								// success
 								if (episode) {
 									resolve({ series, episode });
 								} else {
-									if (all_able) {
-										resolve(null);
-									} else {
-										reject(null);
-									}
+									failed();
 								}
+								// success
 							})
-							.catch(e => {
-								if (all_able) {
-									resolve(null);
-								} else {
-									reject(e);
-								}
-							});
+							.catch(failed);
 					} else {
-						if (all_able) {
-							resolve(null);
-						} else {
-							reject(null);
-						}
+						failed();
 					}
 
 				})
-				.catch(e => {
-					if (all_able) {
-						resolve(null);
-					} else {
-						reject(e);
-					}
-				});
+				.catch(failed);
 
 		});
 

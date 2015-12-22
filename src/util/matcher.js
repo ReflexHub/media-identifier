@@ -6,7 +6,7 @@ a file name
 const remove_terms = require("../data/remove_from").all.map(v => v.toLowerCase());
 const hp_remove_terms = require("../data/remove_from").high_priority.map(v => v.toLowerCase());
 
-const season_episode_reg = /(.*?)\.s?(\d{1,2})e?(\d{1,2})\.(.*)/;
+const season_episode_reg = /(.*?)\.s?(\d{1,2})e?(\d{2})\.(.*)/;
 
 exports.is_season_or_episode = str => {
 
