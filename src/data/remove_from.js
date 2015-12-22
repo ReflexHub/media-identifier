@@ -8,5 +8,6 @@
 module.exports = [
 	"HDTV", "x264", "LOL", "ettv", "PROPER", "720p",
 	"Season", "Episode", "BATV", "WEB", "DL", "AAC",
-	"1080p", "4k", "Bluray", "eng", "subs", "h264"
+	"1080p", "4k", "Bluray", "eng", "subs", "h264",
+	"DVDScr", "xvid", "ac3", "hq"
 ]

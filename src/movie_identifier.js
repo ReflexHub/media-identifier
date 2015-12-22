@@ -1,6 +1,7 @@
 "use strict";
 
 const path = require("path");
+const matcher = require("./util/matcher");
 
 class MovieIdentifier {
 
@@ -41,7 +42,25 @@ class MovieIdentifier {
 
 			todo
 		*/
-		return name;
+
+		let chunks = name.split(" "),
+			final_chunks = [];
+
+		for(let id in chunks){
+			let chunk = chunks[id];
+			if(id == 0 && matcher.is_random_number(chunk)){
+				// 01 The Movie blah blah
+				continue;
+			}
+
+			final_chunks.push(chunk);
+
+			if(matcher.is_year(chunk)){
+				break;
+			}
+
+		}
+		return final_chunks.join(" ");
 	}
 
 }
