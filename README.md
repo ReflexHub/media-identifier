@@ -13,7 +13,7 @@ Aims to identify the context and type of media from existing metadata and filena
 ## Usage
 
 ```js
-var Identifier = require("../identifier"),
+var Identifier = require("media-identifier"),
 	media_identifer = new Identifier({
 		api_keys : {
 			"tmdb" : "..."
@@ -21,9 +21,11 @@ var Identifier = require("../identifier"),
 
 media_identifier.identifyMovie("the.hunger.games.2013").then(r => {
 	console.log(r.title);
+	//The Hunger Games
 });
 
 media_identifier.identifyTV("brooklyn.nine.nine.101").then(r => {
 	console.log(r.series.name + " - " + r.episode.name);
+	//Brooklyn Nine-Nine - Pilot
 });
 ```
