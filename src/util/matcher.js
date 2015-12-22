@@ -39,10 +39,11 @@ exports.is_random_number = n => {
 	}else{
 		if(exports.is_year(n)){
 			return false;
-		}else{
+		}else if(n[0] === "0" && n.length < 3){
 			return true;
 		}
 	}
+	return false;
 }
 
 exports.is_remove_term = n => {

@@ -2,26 +2,51 @@
 
 const path = require("path");
 const matcher = require("./util/matcher");
-const MovieDB = require("moviedb");
+const TMDBSearcher = require("./util/TMDBSearcher");
 
 class MovieIdentifier {
 
 	constructor(identifier) {
 		this.identifier = identifier;
-		this.mdb = MovieDB(this.identifier.options.api_keys.tmdb);
+		this.tmdb_searcher = new TMDBSearcher(this.identifier.options.api_keys.tmdb);
 	}
 
-	identify(path_to_file){
+	// set all_able as true if you want to use Promise.all
+	identify(path_to_file, all_able) {
 
-		let file_name = path.basename(path_to_file);
+		return new Promise((resolve, reject) => {
 
-		// the rough query name
-		let query_name = this.cleanFileName(this.findFocus(file_name));
+			let file_name = path.basename(path_to_file);
 
+			// the rough query name
+			let query =
+				this.cleanQuery(
+					this.cleanFileName(
+						this.findFocus(
+							file_name
+							)));
+
+			this.tmdb_searcher.search(query)
+				.then(r => {
+					resolve(r);
+				})
+				.catch(e => {
+					if (all_able) {
+						resolve(null);
+					} else {
+						reject(e);
+					}
+				});
+
+		});
+
+	}
+
+	cleanQuery(query_name) {
 		// a TMDB-relevant query (including year tags where apt)
 		let has_year;
-		for(let term of query_name.split(" ")){
-			if(matcher.is_year(term)){
+		for (let term of query_name.split(" ")) {
+			if (matcher.is_year(term)) {
 				has_year = term;
 				break;
 			}
@@ -29,19 +54,12 @@ class MovieIdentifier {
 
 		let query = query_name;
 
-		if(has_year){
+		if (has_year) {
 			query = query.replace(new RegExp(has_year, "g"), "");
 			query = query += " y:" + has_year;
 		}
 
-		// not search movie because fsr that does not work :\
-		this.mdb.searchMulti({
-			query
-		}, (err, res) => {
-			if(!err){
-				console.log(res.results[0].title);
-			}
-		});
+		return query;
 	}
 
 	cleanFileName(name) {
@@ -74,16 +92,16 @@ class MovieIdentifier {
 		let chunks = this.identifier.tokenizer.tokenize(name),
 			final_chunks = [];
 
-		for(let id in chunks){
+		for (let id in chunks) {
 			let chunk = chunks[id];
-			if(id == 0 && matcher.is_random_number(chunk)){
+			if (id == 0 && matcher.is_random_number(chunk)) {
 				// 01 The Movie blah blah
 				continue;
 			}
 
 			final_chunks.push(chunk);
 
-			if(matcher.is_year(chunk) || matcher.is_remove_term(chunk)){
+			if (matcher.is_year(chunk) || matcher.is_remove_term(chunk)) {
 				break;
 			}
 
