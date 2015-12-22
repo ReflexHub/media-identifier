@@ -45,7 +45,7 @@ class MovieIdentifier {
 	cleanQuery(query_name) {
 		// a TMDB-relevant query (including year tags where apt)
 		let has_year;
-		for (let term of query_name.split(" ")) {
+		for (let term of query_name.split(" ").reverse()) {
 			if (matcher.is_year(term)) {
 				has_year = term;
 				break;
@@ -101,7 +101,13 @@ class MovieIdentifier {
 
 			final_chunks.push(chunk);
 
-			if (matcher.is_year(chunk) || matcher.is_remove_term(chunk)) {
+			if (matcher.is_year(chunk)) {
+
+				if(!chunks.slice(id+1).find(v => matcher.is_year(v))){
+					break;
+				}
+
+			}else if(matcher.is_remove_term(chunk)){
 				break;
 			}
 
