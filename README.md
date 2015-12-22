@@ -1,4 +1,4 @@
-# Media identifier
+# Media Identifier
 
 **Requires node 4.0.0+**
 
