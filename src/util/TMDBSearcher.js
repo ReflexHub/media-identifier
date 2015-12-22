@@ -6,6 +6,7 @@
  */
 
 const MovieDB = require("moviedb");
+const natural = require("natural");
 
 class TMDBSearcher {
 	constructor(api_key) {
@@ -16,6 +17,14 @@ class TMDBSearcher {
 	// all_able is if instead of rejecting, the promise should
 	// resolve with null so Promise.all doesn't fail
 	// prematurely
+	sortClosest(query, results){
+		for(let result of results){
+			result.closeness = natural.JaroWinklerDistance(query, result.title.toLowerCase());
+		}
+		results = results.sort((a, b) => b.closeness - a.closeness);
+		return results;
+	}
+
 	search(query, amount, all_able) {
 		amount = amount || 1;
 		return new Promise((resolve, reject) => {
@@ -35,14 +44,10 @@ class TMDBSearcher {
 					// success
 					let results = [];
 					for (let result of res.results) {
-						if (results.length === amount) {
-							break;
-						}
 						if (result.media_type === "movie") {
 							results.push(result);
 						}
 					}
-					this.cache[query] = results;
 
 					if (results.length === 0) {
 						if (all_able)
@@ -51,6 +56,9 @@ class TMDBSearcher {
 							reject(err);
 					}
 
+					results = this.sortClosest(query, results);
+
+					this.cache[query] = results;
 					resolve(amount === 1 ? results[0] : results);
 				}
 			});

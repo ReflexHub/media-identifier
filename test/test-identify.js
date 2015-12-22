@@ -18,8 +18,6 @@ console.log("Testing identification:");
 
 for(let file_name of file_names){
 	media_identifier.identifyMovie(file_name).then(r => {
-		console.log("\n-----\n");
-		console.log(file_name + ":");
-		console.log(r);
+		console.log(file_name + ":", r.title);
 	});
 }

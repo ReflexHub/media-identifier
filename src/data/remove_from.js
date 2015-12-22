@@ -9,7 +9,8 @@
 exports.high_priority = [
 	"HDTV", "x264", "LOL", "ettv", "720p", "BATV",
 	"DL", "AAC", "1080p", "4k", "bluray", "eng",
-	"subs", "h264", "dvdscr", "xvid", "ac3", "hq"
+	"subs", "h264", "dvdscr", "xvid", "ac3", "hq",
+	"hd", "lq"
 ]
 
 exports.all = [
