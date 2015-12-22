@@ -8,7 +8,7 @@ class MovieIdentifier {
 
 	constructor(identifier) {
 		this.identifier = identifier;
-		this.tmdb_searcher = new TMDBSearcher(this.identifier.options.api_keys.tmdb);
+		this.tmdb_searcher = new TMDBSearcher(this.identifier.options.api_keys.tmdb, this.identifier.options.cache_location);
 	}
 
 	// set all_able as true if you want to use Promise.all

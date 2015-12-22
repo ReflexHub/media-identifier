@@ -38,3 +38,4 @@ node_modules
 
 test/file_names.js
 test/api_keys.js
+test/cache

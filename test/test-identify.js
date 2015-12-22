@@ -11,7 +11,7 @@ try {
 	process.exit(1);
 }
 
-const media_identifier = new Identifier({api_keys});
+const media_identifier = new Identifier({api_keys, cache_location : __dirname + "/cache/"});
 
 console.log();
 console.log("Testing identification:");

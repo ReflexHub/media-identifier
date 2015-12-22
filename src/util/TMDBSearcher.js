@@ -7,11 +7,13 @@
 
 const MovieDB = require("moviedb");
 const natural = require("natural");
+const CacheManager = require("./CacheSaver");
 
 class TMDBSearcher {
-	constructor(api_key) {
+	constructor(api_key, cache_save_location) {
 		this.tmdb = MovieDB(api_key);
-		this.cache = {};
+		this.cache_save_location = cache_save_location;
+		this.cache = CacheManager.load(cache_save_location);
 	}
 
 	// all_able is if instead of rejecting, the promise should
@@ -60,6 +62,7 @@ class TMDBSearcher {
 
 					this.cache[query] = results;
 					resolve(amount === 1 ? results[0] : results);
+					CacheManager.save(this.cache, this.cache_save_location);
 				}
 			});
 

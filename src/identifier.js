@@ -19,6 +19,7 @@ class Identifier {
 			"tmdb" : null
 		};
 
+		options.cache_location = options.cache_location || null;
 		options.remove_terms = require("./data/remove_from").all.concat(options.remove_terms || []);
 		options.extension_names = require("./data/extension_names").concat(options.extension_names || []);
 
