@@ -4,6 +4,7 @@ const path = require("path");
 const natural = require("natural");
 const cheerio = require("cheerio");
 const request = require("superagent");
+const MovieIdentifier = require("./movie_identifier");
 
 class Identifier {
 	constructor(options) {
@@ -34,32 +35,20 @@ class Identifier {
 
 		this.tokenizer = new natural.WordTokenizer();
 
-	}
+		/**
+		 * sub-identifiers
+		 */
 
-	identify(path_to_file) {
-
-		let file_name = path.basename(path_to_file);
-
-		return this.cleanFileName(file_name);
+		this.movie_identifier = new MovieIdentifier(this);
 
 	}
 
-	cleanFileName(name){
-		// removes terms such as 720p from file names.
+	identifyMovie(path_to_file) {
 
-		name = name.toLowerCase();
+		return this.movie_identifier.identify(path_to_file);
 
-		let tokens = this.tokenizer.tokenize(name);
-		let final_terms = [];
-
-		for(let token of tokens){
-			if(!~this.options.remove_terms.indexOf(token)){
-				final_terms.push(token);
-			}
-		}
-
-		return final_terms.join(" ");
 	}
+
 }
 
 module.exports = Identifier;
