@@ -2,8 +2,8 @@
 
 const path = require("path");
 const natural = require("natural");
-const cheerio = require("cheerio");
-const request = require("superagent");
+//const cheerio = require("cheerio");
+//const request = require("superagent");
 const MovieIdentifier = require("./movie_identifier");
 
 class Identifier {
