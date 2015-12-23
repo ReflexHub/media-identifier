@@ -99,7 +99,7 @@ class TVIdentifier {
 	cleanFileName(name) {
 		// removes terms such as 720p from file names.
 		// e.g. `The.Movie.Name.720p` becomes `the movie name`
-		name = name.toLowerCase();
+		name = name.replace(/_/g, " ").toLowerCase();
 
 		let tokens = this.identifier.tokenizer.tokenize(name);
 		let final_terms = [];

@@ -6,7 +6,10 @@ const natural = require("natural");
 //const request = require("superagent");
 const MovieIdentifier = require("./movie_identifier");
 const TVIdentifier = require("./tv_identifier");
+<<<<<<< HEAD
 const TMDBSearcher = require("./util/TMDBSearcher");
+=======
+>>>>>>> Added song identification
 
 class Identifier {
 	constructor(options) {
@@ -18,7 +21,7 @@ class Identifier {
 		options = options || {};
 
 		options.api_keys = options.api_keys || {
-			"tmdb" : null
+			"tmdb": null
 		};
 
 		options.cache_location = options.cache_location || null;
@@ -26,7 +29,7 @@ class Identifier {
 		options.extension_names = require("./data/extension_names").concat(options.extension_names || []);
 
 		options.remove_terms =
-			options.remove_terms
+		options.remove_terms
 			.concat(options.extension_names)
 			.map(v => v.toLowerCase());
 
@@ -44,19 +47,19 @@ class Identifier {
 		this.tmdb_searcher = new TMDBSearcher(options.api_keys.tmdb, options.cache_location);
 		this.movie_identifier = new MovieIdentifier(this);
 		this.tv_identifier = new TVIdentifier(this);
-
+		this.song_identifier = new SongIdentifier(this);
 	}
 
 	identifyMovie(path_to_file) {
-
 		return this.movie_identifier.identify(path_to_file);
-
 	}
 
 	identifyTV(path_to_file) {
-
 		return this.tv_identifier.identify(path_to_file);
+	}
 
+	identifySong(path_to_file) {
+		return this.song_identifier.identify(path_to_file);
 	}
 }
 

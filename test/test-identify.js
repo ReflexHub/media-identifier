@@ -2,10 +2,11 @@
 /* global process */
 const Identifier = require("../identifier");
 
-var movie_names, tv_names, api_keys;
+var movie_names, tv_names, song_names, api_keys;
 try {
 	movie_names = require("./file_names").movies;
 	tv_names = require("./file_names").tv;
+	song_names = require("./file_names").songs;
 	api_keys = require("./api_keys");
 } catch (e) {
 	console.log("You are missing files needed to test!\n" + e.stack);
@@ -25,5 +26,14 @@ for(let file_name of movie_names){
 for(let file_name of tv_names){
 	media_identifier.identifyTV(file_name).then(r => {
 		console.log(r.series.name + " - " + r.episode.name);
+<<<<<<< HEAD
 	}).catch(e => console.log(e));
+=======
+	}).catch(e => console.log(e.stack));
+}
+for(let file_name of song_names){
+	media_identifier.identifySong(file_name).then(r => {
+		console.log(r);
+	}).catch(e => console.log(e.stack));
+>>>>>>> Added song identification
 }

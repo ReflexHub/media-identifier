@@ -28,8 +28,11 @@
   },
   "homepage": "https://github.com/ReflexHub/media-identifier#readme",
   "dependencies": {
+    "ffmetadata": "git+https://github.com/ReflexHub/node-ffmetadata.git",
     "fs-extra": "^0.26.3",
     "moviedb": "^0.2.2",
-    "natural": "^0.2.1"
+    "natural": "^0.2.1",
+    "superagent": "^1.6.1",
+    "superagent-cache": "^1.3.1"
   }
 }
