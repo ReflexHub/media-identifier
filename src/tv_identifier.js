@@ -8,8 +8,7 @@ class TVIdentifier {
 
 	constructor(identifier) {
 		this.identifier = identifier;
-		this.tmdb_series_searcher = new TMDBSearcher(this.identifier.options.api_keys.tmdb, this.identifier.options.cache_location, "tmdb.tv.cache.json");
-		this.tmdb_episode_searcher = new TMDBSearcher(this.identifier.options.api_keys.tmdb, this.identifier.options.cache_location, "tmdb.episodes.cache.json");
+		this.tmdb_searcher = this.identifier.tmdb_searcher;
 	}
 
 	// set all_able as true if you want to use Promise.all
@@ -21,7 +20,7 @@ class TVIdentifier {
 				if (all_able) {
 					resolve(null);
 				} else {
-					reject(null);
+					reject(e);
 				}
 				return;
 			}
@@ -47,7 +46,7 @@ class TVIdentifier {
 				query = query.trim();
 			}
 
-			this.tmdb_series_searcher.searchTV(query)
+			this.tmdb_searcher.searchTV(query)
 				.then(series => {
 
 					if (series) {
@@ -55,7 +54,7 @@ class TVIdentifier {
 							failed();
 							return;
 						}
-						this.tmdb_episode_searcher.tvEpisodeInfo(series.id, season, episode)
+						this.tmdb_searcher.tvEpisodeInfo(series.id, season, episode)
 							.then(episode => {
 								// success
 								if (episode) {

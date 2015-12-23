@@ -8,13 +8,20 @@
 const MovieDB = require("moviedb");
 const natural = require("natural");
 const CacheManager = require("./CacheSaver");
+const DataManager = require("./TMDBData");
+const cache_name = n => `tmdb.${n}.cache.json`;
 
 class TMDBSearcher {
-	constructor(api_key, cache_save_location, filename) {
+	constructor(api_key, location) {
 		this.tmdb = MovieDB(api_key);
-		this.cache_save_location = cache_save_location;
-		this.cache_filename = filename;
-		this.cache = CacheManager.load(cache_save_location, filename);
+
+		this.cache_save_location = location;
+
+		this.data_manager = new DataManager(location);
+
+		this.movie_cache = CacheManager.load(location, cache_name("movie"));
+		this.tv_cache = CacheManager.load(location, cache_name("tv"));
+		this.episode_cache = CacheManager.load(location, cache_name("episode"));
 	}
 
 	// all_able is if instead of rejecting, the promise should
@@ -41,8 +48,8 @@ class TMDBSearcher {
 
 			let cache_id = `${id} ${season_number} ${episode_number}`;
 
-			if (this.cache[cache_id]) {
-				resolve(this.cache[cache_id]);
+			if (this.episode_cache[cache_id]) {
+				resolve(this.expand(this.episode_cache[cache_id]));
 				return;
 			}
 
@@ -56,8 +63,9 @@ class TMDBSearcher {
 					// success
 					if (res.id) {
 						resolve(res);
-						this.cache[cache_id] = res;
-						CacheManager.save(this.cache, this.cache_save_location, this.cache_filename);
+						this.episode_cache[cache_id] = res.id;
+						this.data_manager.set(res.id, res);
+						CacheManager.save(this.episode_cache, this.cache_save_location, cache_name("episode"));
 					} else {
 						if (all_able)
 							resolve(null);
@@ -70,44 +78,72 @@ class TMDBSearcher {
 		})
 	}
 
-	search(query, amount, all_able, cat) {
+	expand_array(ar){
+		return ar.map(v => this.expand);
+	}
+
+	expand(id) {
+		return this.data_manager.get(id);
+	}
+
+	search(query, amount, all_able, category) {
 		amount = amount || 1;
 		return new Promise((resolve, reject) => {
 
-			if (this.cache[query]) {
-				resolve(amount === 1 ? this.cache[query][0] : this.cache[query]);
+			if (this.movie_cache[query]){
+				resolve(amount === 1 ? this.expand(this.movie_cache[query][0]) : this.expand_array(this.movie_cache[query]));
+				return;
+			}else if(this.tv_cache[[query]]){
+				resolve(amount === 1 ? this.expand(this.tv_cache[query][0]) : this.expand_array(this.tv_cache[query]));
 				return;
 			}
 
 			this.tmdb.searchMulti({ query }, (err, res) => {
-				if (err) {
-					if (all_able)
-						resolve(null);
-					else
-						reject(err);
+				if (err || !res.results) {
+					error(err);
 				} else {
-					// success
-					let results = [];
-					for (let result of res.results) {
-						if (result.media_type === cat) {
-							results.push(result);
+					// add all the information of the found results to a cache,
+					// even if they are not what we want.
+					for(let item of res.results){
+						this.data_manager.set(item.id, item, true);
+					}
+					this.data_manager.save();
+
+					let filtered_results = res.results.filter(v => v.media_type === category);
+
+					if (filtered_results.length === 0) {
+						error();
+					}else{
+						filtered_results = this.sortClosest(query, filtered_results);
+						resolve(amount === 1 ? filtered_results[0] : filtered_results);
+
+						filtered_results = filtered_results.map(v => v.id);
+
+						switch(category){
+							case "movie":
+								this.movie_cache[query] = filtered_results;
+								CacheManager.save(this.movie_cache, this.cache_save_location, cache_name("movie"));
+								break;
+							case "tv":
+								this.tv_cache[query] = filtered_results;
+								CacheManager.save(this.tv_cache, this.cache_save_location, cache_name("tv"));
+								break;
+							default:
+								break;
 						}
+
 					}
 
-					if (results.length === 0) {
-						if (all_able)
-							resolve(null);
-						else
-							reject(err);
-					}
-
-					results = this.sortClosest(query, results);
-
-					this.cache[query] = results;
-					resolve(amount === 1 ? results[0] : results);
-					CacheManager.save(this.cache, this.cache_save_location, this.cache_filename);
 				}
+
 			});
+
+			function error(r){
+				if (all_able)
+					resolve(null);
+				else
+					reject(err);
+			}
 
 		});
 	}

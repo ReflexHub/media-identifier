@@ -6,6 +6,7 @@ const natural = require("natural");
 //const request = require("superagent");
 const MovieIdentifier = require("./movie_identifier");
 const TVIdentifier = require("./tv_identifier");
+const TMDBSearcher = require("./util/TMDBSearcher");
 
 class Identifier {
 	constructor(options) {
@@ -40,7 +41,7 @@ class Identifier {
 		/**
 		 * sub-identifiers
 		 */
-
+		this.tmdb_searcher = new TMDBSearcher(options.api_keys.tmdb, options.cache_location);
 		this.movie_identifier = new MovieIdentifier(this);
 		this.tv_identifier = new TVIdentifier(this);
 

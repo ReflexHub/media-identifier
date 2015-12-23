@@ -2,13 +2,12 @@
 
 const path = require("path");
 const matcher = require("./util/matcher");
-const TMDBSearcher = require("./util/TMDBSearcher");
 
 class MovieIdentifier {
 
 	constructor(identifier) {
 		this.identifier = identifier;
-		this.tmdb_searcher = new TMDBSearcher(this.identifier.options.api_keys.tmdb, this.identifier.options.cache_location, "tmdb.movies.cache.json");
+		this.tmdb_searcher = this.identifier.tmdb_searcher;
 	}
 
 	// set all_able as true if you want to use Promise.all
