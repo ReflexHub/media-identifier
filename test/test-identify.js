@@ -26,14 +26,10 @@ for(let file_name of movie_names){
 for(let file_name of tv_names){
 	media_identifier.identifyTV(file_name).then(r => {
 		console.log(r.series.name + " - " + r.episode.name);
-<<<<<<< HEAD
 	}).catch(e => console.log(e));
-=======
-	}).catch(e => console.log(e.stack));
 }
 for(let file_name of song_names){
 	media_identifier.identifySong(file_name).then(r => {
 		console.log(r);
 	}).catch(e => console.log(e.stack));
->>>>>>> Added song identification
 }

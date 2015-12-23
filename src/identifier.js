@@ -6,10 +6,8 @@ const natural = require("natural");
 //const request = require("superagent");
 const MovieIdentifier = require("./movie_identifier");
 const TVIdentifier = require("./tv_identifier");
-<<<<<<< HEAD
 const TMDBSearcher = require("./util/TMDBSearcher");
-=======
->>>>>>> Added song identification
+const SongIdentifier = require("./song_identifier");
 
 class Identifier {
 	constructor(options) {
