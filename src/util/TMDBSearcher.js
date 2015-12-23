@@ -46,6 +46,9 @@ class TMDBSearcher {
 	tvEpisodeInfo(id, season_number, episode_number, all_able) {
 		return new Promise((resolve, reject) => {
 
+			season_number = parseInt(season_number);
+			episode_number = parseInt(episode_number);
+
 			let cache_id = `${id} ${season_number} ${episode_number}`;
 
 			if (this.episode_cache[cache_id]) {
@@ -88,6 +91,7 @@ class TMDBSearcher {
 
 	search(query, amount, all_able, category) {
 		amount = amount || 1;
+		query = query.replace(/\s+/g,' ');
 		return new Promise((resolve, reject) => {
 
 			if (this.movie_cache[query]){
